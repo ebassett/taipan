@@ -23,21 +23,30 @@ bindir = $(prefix)/games
 # 'make install' will compile and install the program
 
 CC = gcc
-CFLAGS = -O3 -Wall
+CFLAGS = -Wall # Optimization/debugging flags added below, as appropriate.
 OBJECTS = taipan.o
-LIBS = -lcurses
+# EJB 2015-04-20 - Originally "curses", but I had to change it to "ncurses" to build.
+#LIBS = -lcurses
+LIBS = -lncurses
 RM = rm -f
 
+all: CFLAGS += -O3
 all: taipan
 
+debug: CFLAGS += -ggdb3 -DDEBUG
+debug: taipan
+
+.PHONY: clean
 clean:
 	$(RM) taipan $(OBJECTS)
 
+.PHONY: install
 install: taipan
-	install -m 4755 -o root -g root -s taipan $(bindir)
+	install  -m 4755  -o root  -g root  -s taipan $(bindir)
 
 taipan: $(OBJECTS)
-	$(CC) $(CFLAGS) -o taipan $(OBJECTS) $(LIBS)
+	$(CC) $(CFLAGS)  -o taipan $(OBJECTS) $(LIBS)
 
 taipan.o : taipan.c
-	$(CC) $(CFLAGS) -c taipan.c -o taipan.o
+	$(CC) $(CFLAGS)  -c taipan.c  -o taipan.o
+
